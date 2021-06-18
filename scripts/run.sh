@@ -1,6 +1,5 @@
 #!/bin/sh
 
 . venv/bin/activate
-export FLASK_APP=src/api
+export FLASK_APP=server
 flask run
-python src/gui.py

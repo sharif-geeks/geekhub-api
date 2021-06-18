@@ -1,16 +1,13 @@
 from flask import Flask, request
 from flask_socketio import SocketIO, emit, join_room, leave_room, rooms, send
-from flask_cors import CORS
+
+import eventlet
+eventlet.monkey_patch()
 
 app = Flask(__name__)
-CORS(app)
-cors = CORS(app, resource={
-    r"/*": {
-        "origins": "*"
-    }
-})
 app.config['SECRET_KEY'] = 'my-very-secret-code-that-noone-knows'
-socketio = SocketIO(app, cors_allowed_origins="*", path="socket.io")
+socketio = SocketIO(app, cors_allowed_origins="*",
+                    path="socket.io", engineio_logger=True, logger=True)
 
 
 def log(message):
