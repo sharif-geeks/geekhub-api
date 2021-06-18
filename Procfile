@@ -1,1 +1,1 @@
-web: gunicorn -b 0.0.0.0:80 server:app
+web: gunicorn -t 150 -b 0.0.0.0:${PORT} server:app

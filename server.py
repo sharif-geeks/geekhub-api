@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask_socketio import SocketIO, emit, join_room, leave_room, rooms
 from flask_cors import CORS
 import eventlet
+import os
 
 eventlet.monkey_patch()
 
@@ -94,4 +95,5 @@ def on_receive_message(data):
 
 # runner
 if __name__ == '__main__':
-    socketio.run(app)
+    port = int(os.environ.get('PORT', 5000))
+    socketio.run(app, host='0.0.0.0', port=port)
