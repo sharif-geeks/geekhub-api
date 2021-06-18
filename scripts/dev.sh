@@ -2,5 +2,5 @@
 
 . venv/bin/activate
 export FLASK_ENV=development
-python api.py
-python gui.py
+python src/api.py
+python src/gui.py

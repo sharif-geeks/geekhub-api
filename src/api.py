@@ -6,6 +6,10 @@ app.config['SECRET_KEY'] = 'my-very-secret-code-that-noone-knows'
 socketio = SocketIO(app, cors_allowed_origins="*", path="socket.io")
 
 
+def log(message):
+    print('\n\n\n\n' + message + '\n\n\n\n')
+
+
 @app.route("/")
 def show_stat():
     return "<p>Geekhub Chat API</p>"
@@ -13,42 +17,47 @@ def show_stat():
 
 # connection
 @socketio.on('connect')
-def handle_client_connect(auth):
-    print('client connected: ', str(auth))
-    emit('server/connect', {'data': 'Connected'})
+def on_client_connect(auth):
+    log('client connected: ' + str(request.sid))
 
 
 @socketio.on('disconnect')
-def handle_client_disconnect():
-    print('client disconnected')
+def on_client_disconnect():
+    log('client disconnected')
 
 
 # room
 @socketio.on('client/join')
 def on_join(data):
-    print('user connected: ' + str(data))
+    log('user connected: ' + data['room'])
+    sid = request.sid
     username = data['username']
     room = data['room']
     join_room(room)
     to_send = {
-        'message': username + ' has entered the room.',
+        'message': username + ' has entered the room: ' + room,
         'username': 'bot',
+        'room': room,
         'sid': 0
     }
+    emit('server/join', room, to=sid)
     emit('server/message', to_send, to=room)
 
 
 @socketio.on('client/leave')
 def on_leave(data):
-    print('user left: ' + str(data))
+    log('user left: ' + str(data))
+    sid = request.sid
     username = data['username']
     room = data['room']
     leave_room(room)
     to_send = {
-        'message': username + ' has left the room.',
+        'message': username + ' has left the room: ' + room,
         'username': 'bot',
+        'room': room,
         'sid': 0
     }
+    emit('server/leave', room, to=sid)
     emit('server/message', to_send, to=room)
 
 
@@ -62,13 +71,18 @@ def get_client_rooms(data):
 
 # message
 @socketio.on('client/message')
-def handle_receive_message(data):
-    print('received message: ' + str(data))
+def on_receive_message(data):
+    log('received message: ' + str(data))
     sid = request.sid
     username = data['username']
     room = data['room']
     message = data['message']
-    to_send = {'message': message, 'username': username, 'sid': sid}
+    to_send = {
+        'message': message,
+        'username': username,
+        'room': room,
+        'sid': sid
+    }
     emit('server/message', to_send, to=room)
 
 

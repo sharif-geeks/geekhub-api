@@ -16,3 +16,8 @@ below are some of the values saved in user storage
 <br/>
 
 # API
+
+# References
+
+- https://socket.io/docs
+- https://flask-socketio.readthedocs.io
