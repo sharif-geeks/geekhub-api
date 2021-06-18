@@ -3,12 +3,6 @@ from flask_socketio import SocketIO, emit, join_room, leave_room, rooms, send
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
-cors = CORS(app, resource={
-    r"/*": {
-        "origins": "*"
-    }
-})
 app.config['SECRET_KEY'] = 'my-very-secret-code-that-noone-knows'
 socketio = SocketIO(app, cors_allowed_origins="*", path="socket.io")
 
@@ -36,7 +30,7 @@ def on_client_disconnect():
 # room
 @socketio.on('client/join')
 def on_join(data):
-    log('user connected: ' + data['room'])
+    log('user joined: ' + str(data))
     sid = request.sid
     username = data['username']
     room = data['room']
@@ -51,7 +45,7 @@ def on_join(data):
     emit('server/message', to_send, to=room)
 
 
-@socketio.on('client/leave')
+@ socketio.on('client/leave')
 def on_leave(data):
     log('user left: ' + str(data))
     sid = request.sid
@@ -68,7 +62,7 @@ def on_leave(data):
     emit('server/message', to_send, to=room)
 
 
-@socketio.on('client/rooms')
+@ socketio.on('client/rooms')
 def get_client_rooms(data):
     sid = request.sid
     client_rooms = rooms(sid=sid)
@@ -77,7 +71,7 @@ def get_client_rooms(data):
 
 
 # message
-@socketio.on('client/message')
+@ socketio.on('client/message')
 def on_receive_message(data):
     log('received message: ' + str(data))
     sid = request.sid
