@@ -5,7 +5,6 @@ import eventlet
 import os
 
 eventlet.monkey_patch()
-
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 app.config['SECRET_KEY'] = 'my-very-secret-code-that-noone-knows'
