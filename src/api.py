@@ -1,5 +1,5 @@
 from flask import Flask, request
-from flask_socketio import SocketIO, emit, join_room, leave_room, send, rooms
+from flask_socketio import SocketIO, emit, join_room, leave_room, rooms, send
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'my-very-secret-code-that-noone-knows'
