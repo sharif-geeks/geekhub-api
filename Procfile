@@ -1,1 +1,1 @@
-web: gunicorn -b 0.0.0.0:8000 server:app
+web: gunicorn -b 0.0.0.0:443 server:app
