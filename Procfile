@@ -1,1 +1,1 @@
-web: gunicorn -t 150 -b 0.0.0.0:${PORT} server:app
+web: gunicorn -t 150 -b 0.0.0.0:${PORT} --max-requests 1500 server:app
