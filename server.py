@@ -42,7 +42,7 @@ def on_join(data):
     join_room(room)
     to_send = {
         'message': username + ' has entered the room: ' + room,
-        'username': 'bot',
+        'username': 'server',
         'room': room,
         'sid': 0
     }
@@ -50,7 +50,7 @@ def on_join(data):
     emit('server/message', to_send, to=room)
 
 
-@ socketio.on('client/leave')
+@socketio.on('client/leave')
 def on_leave(data):
     log('user left: ' + str(data))
     sid = request.sid
@@ -59,7 +59,7 @@ def on_leave(data):
     leave_room(room)
     to_send = {
         'message': username + ' has left the room: ' + room,
-        'username': 'bot',
+        'username': 'server',
         'room': room,
         'sid': 0
     }
@@ -67,7 +67,7 @@ def on_leave(data):
     emit('server/message', to_send, to=room)
 
 
-@ socketio.on('client/rooms')
+@socketio.on('client/rooms')
 def get_client_rooms(data):
     sid = request.sid
     client_rooms = rooms(sid=sid)
@@ -76,20 +76,30 @@ def get_client_rooms(data):
 
 
 # message
-@ socketio.on('client/message')
+@socketio.on('client/message')
 def on_receive_message(data):
     log('received message: ' + str(data))
     sid = request.sid
-    username = data['username']
     room = data['room']
-    message = data['message']
-    to_send = {
-        'message': message,
-        'username': username,
-        'room': room,
-        'sid': sid
-    }
-    emit('server/message', to_send, to=room)
+
+    if room.includes(rooms(sid=sid)):
+        username = data['username']
+        message = data['message']
+        to_send = {
+            'message': message,
+            'username': username,
+            'room': room,
+            'sid': sid
+        }
+        emit('server/message', to_send, to=room)
+    else:
+        to_send = {
+            'message': f'You are not joined room {room}!',
+            'username': 'server',
+            'room': sid,
+            'sid': 0
+        }
+        emit('server/message', to_send, to=sid)
 
 
 # runner
