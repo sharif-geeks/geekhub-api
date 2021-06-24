@@ -82,7 +82,7 @@ def on_receive_message(data):
     sid = request.sid
     room = data['room']
 
-    if room.includes(rooms(sid=sid)):
+    if room in rooms(sid=sid):
         username = data['username']
         message = data['message']
         to_send = {
